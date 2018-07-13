@@ -1,0 +1,8 @@
+version: '3.4'
+
+services:
+  spotkick:
+    image: ${DOCKER_REGISTRY}spotkick
+    build:
+      context: .
+      dockerfile: Spotkick/Dockerfile

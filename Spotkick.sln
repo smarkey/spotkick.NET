@@ -1,0 +1,31 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 15
+VisualStudioVersion = 15.0.27703.2035
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Spotkick", "Spotkick\Spotkick.csproj", "{9E316502-4AF8-4F6B-9D84-DB5B2B9F5220}"
+EndProject
+Project("{E53339B2-1760-4266-BCC7-CA923CBCF16C}") = "docker-compose", "docker-compose.dcproj", "{69C0F690-EE72-4AD2-9216-AB4AE6FA2FAC}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{9E316502-4AF8-4F6B-9D84-DB5B2B9F5220}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{9E316502-4AF8-4F6B-9D84-DB5B2B9F5220}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{9E316502-4AF8-4F6B-9D84-DB5B2B9F5220}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{9E316502-4AF8-4F6B-9D84-DB5B2B9F5220}.Release|Any CPU.Build.0 = Release|Any CPU
+		{69C0F690-EE72-4AD2-9216-AB4AE6FA2FAC}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{69C0F690-EE72-4AD2-9216-AB4AE6FA2FAC}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{69C0F690-EE72-4AD2-9216-AB4AE6FA2FAC}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{69C0F690-EE72-4AD2-9216-AB4AE6FA2FAC}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {73AAD30F-3D90-42B4-A23A-2DBF8EAFBFB9}
+	EndGlobalSection
+EndGlobal

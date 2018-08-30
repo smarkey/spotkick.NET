@@ -1,0 +1,22 @@
+﻿@{
+    ViewData["Title"] = "Artist Events";
+}
+
+<div class="row">
+    <div class="col-md-4">
+    </div>
+    <div class="col-md-4">
+        <h2>Events</h2>
+        <form method="get" asp-controller="Spotkick" asp-action="Events">
+            <select multiple>
+                @foreach (var eventArtist in (List<Artist>)ViewData["EventArtist"])
+                {
+                <option value="@eventArtist.Id">@eventArtist.Name</option>
+                }
+            </select>
+            <input type="submit" name="events" value="Events" class="btn btn-info" />
+        </form>
+    </div>
+    <div class="col-md-4">
+    </div>
+</div>

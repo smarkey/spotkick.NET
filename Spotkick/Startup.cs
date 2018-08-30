@@ -1,11 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Builder;
+﻿using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.EntityFrameworkCore;
+using Spotkick.Models;
 
 namespace Spotkick
 {
@@ -22,6 +20,17 @@ namespace Spotkick
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddMvc();
+
+            var optionsBuilder = new DbContextOptionsBuilder<SpotkickContext>();
+            optionsBuilder.UseSqlServer(Properties.Resources.DbConnectionString);
+
+            using (var db = new SpotkickContext(optionsBuilder.Options))
+            {
+                if (!db.Database.EnsureCreated())
+                    db.Database.Migrate();
+            }
+
+            services.AddDbContext<SpotkickContext>(options => options.UseSqlServer(Properties.Resources.DbConnectionString));
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -34,7 +43,7 @@ namespace Spotkick
             }
             else
             {
-                app.UseExceptionHandler("/Home/Error");
+                app.UseExceptionHandler("/Spotkick/Error");
             }
 
             app.UseStaticFiles();
@@ -43,7 +52,7 @@ namespace Spotkick
             {
                 routes.MapRoute(
                     name: "default",
-                    template: "{controller=Home}/{action=Index}/{id?}");
+                    template: "{controller=Spotkick}/{action=Index}/{id?}");
             });
         }
     }

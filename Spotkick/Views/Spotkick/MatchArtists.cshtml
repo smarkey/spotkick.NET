@@ -1,0 +1,22 @@
+﻿@{
+    ViewData["Title"] = "Bandsintown Artists";
+}
+
+<div class="row">
+    <div class="col-md-4">
+    </div>
+    <div class="col-md-4">
+        <h2>Artists</h2>
+        <form method="get" asp-controller="Spotkick" asp-action="TopTracks">
+            <select multiple>
+                @foreach (var artist in (List<Artist>) ViewData["Artists"])
+                {
+                    <option value="@artist.Id">@artist.Name</option>
+                }
+            </select>
+            <input type="submit" name="topTracks" value="Top Tracks" class="btn btn-info" />
+        </form>
+    </div>
+    <div class="col-md-4">
+    </div>
+</div>

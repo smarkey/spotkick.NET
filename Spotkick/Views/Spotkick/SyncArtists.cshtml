@@ -1,0 +1,18 @@
+﻿@{
+    ViewData["Title"] = "Home Page";
+}
+
+<div class="row">
+    <div class="col-md-12">
+        <h2>Spotify Artists</h2>
+        <form method="get" asp-controller="Spotkick" asp-action="MatchArtists">
+            <select multiple name="artists">
+                @foreach (var artist in (List<Artist>) ViewData["Artists"])
+                {
+                    <option value="@artist.SpotifyId">@artist.Name</option>
+                }
+            </select>
+            <input type="submit" name="match" value="Match" class="btn btn-info" />
+        </form>
+    </div>
+</div>

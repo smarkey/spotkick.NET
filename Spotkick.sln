@@ -3,18 +3,20 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
 VisualStudioVersion = 15.0.27703.2035
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Spotkick", "Spotkick\Spotkick.csproj", "{9E316502-4AF8-4F6B-9D84-DB5B2B9F5220}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Spotkick", "src\Spotkick\Spotkick.csproj", "{9E316502-4AF8-4F6B-9D84-DB5B2B9F5220}"
 EndProject
 Project("{E53339B2-1760-4266-BCC7-CA923CBCF16C}") = "docker-compose", "docker-compose.dcproj", "{69C0F690-EE72-4AD2-9216-AB4AE6FA2FAC}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Spotkick.Test", "Spotkick.Test\Spotkick.Test.csproj", "{30A81CCF-0409-495F-9CDF-58B28FAE7D61}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Spotkick.Test", "test\Spotkick.Test\Spotkick.Test.csproj", "{30A81CCF-0409-495F-9CDF-58B28FAE7D61}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{64C045A9-A4EC-4B87-A597-51DDA268B346}"
 	ProjectSection(SolutionItems) = preProject
-		Local.testsettings = Local.testsettings
+		Readme.md = Readme.md
+		global.json = global.json
+		SonarQube.Analysis.xml = SonarQube.Analysis.xml
 	EndProjectSection
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Spotkick.Specs", "Spotkick.Specs\Spotkick.Specs.csproj", "{44F39C05-4B37-4450-B59C-65CD1FA47236}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Spotkick.Specs", "test\Spotkick.Specs\Spotkick.Specs.csproj", "{44F39C05-4B37-4450-B59C-65CD1FA47236}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

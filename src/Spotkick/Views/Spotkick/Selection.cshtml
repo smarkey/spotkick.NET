@@ -1,0 +1,26 @@
+﻿@{
+    ViewData["Title"] = "Selection";
+
+    var artists = (List<Artist>) ViewData["SpotifyArtists"];
+    var city = (string) ViewData["City"];
+    var userId = (int) ViewData["UserId"];
+}
+
+<div class="row">
+    <div class="col-md-12">
+        <h2>Artists coming to @city</h2>
+        <p>Here is a list of the artists you follow on Spotify who are coming to @city soon!</p>
+        <p>Please select the artists you would like to add to a playlist.</p>
+        <form method="get" asp-controller="Spotkick" asp-action="Playlist">
+            <input hidden name="userId" value="@userId"/>
+            <select name="artistIds" class="custom-select custom-select-lg mb-3" multiple>
+                @foreach (var artist in artists)
+                {
+                    <option selected value="@artist.Id">@artist.Name</option>
+                }
+            </select>
+            <br/>
+            <input type="submit" name="generatePlaylist" value="Generate Playlist" class="btn btn-info"/>
+        </form>
+    </div>
+</div>

@@ -1,4 +1,5 @@
 ﻿using System.Diagnostics;
+using System.Linq;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.EntityFrameworkCore;
@@ -8,14 +9,18 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Serilog;
 using Spotkick.Interfaces;
+using Spotkick.Interfaces.Spotkick;
 using Spotkick.Models;
 using Spotkick.Properties;
 using Spotkick.Services;
+using Spotkick.Services.Spotkick;
 
 namespace Spotkick
 {
     public class Startup
     {
+        public IConfiguration Configuration { get; }
+        
         public Startup(IConfiguration configuration)
         {
             Log.Logger = new LoggerConfiguration()
@@ -26,26 +31,33 @@ namespace Spotkick
             Configuration = configuration;
         }
 
-        public IConfiguration Configuration { get; }
-
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddMvc(option => option.EnableEndpointRouting = false);
             services.AddRouting();
+            services.AddSwaggerGen();
+            services.AddScoped<IArtistService, ArtistService>();
+            services.AddScoped<IUserService, UserService>();
+            
+            services.AddOptions();
+            services.Configure<SpotifyConfig>(Configuration.GetSection("Spotify"));
+            services.Configure<SongkickConfig>(Configuration.GetSection("Songkick"));
+
             services.AddDbContext<SpotkickContext>(options =>
             {
-                options.UseSqlServer(Resources.DbConnectionString);
+                options.UseSqlServer(Configuration.GetConnectionString("Default"));
                 options.LogTo(_ => Debug.WriteLine(_));
             });
-            services.AddSwaggerGen();
 
-            // var optionsBuilder = new DbContextOptionsBuilder<SpotkickContext>();
-            // optionsBuilder.UseSqlServer(Resources.DbConnectionString);
-            //
-            // using var db = new SpotkickContext(optionsBuilder.Options);
-            // if (!db.Database.EnsureCreated())
-            //     db.Database.Migrate();
+            var optionsBuilder = new DbContextOptionsBuilder<SpotkickContext>();
+            optionsBuilder.UseSqlServer(Configuration.GetConnectionString("Default"));
+
+            using var db = new SpotkickContext(optionsBuilder.Options);
+            var migrationsToRun = db.Database.GetPendingMigrations();
+            
+            if (migrationsToRun.Any())
+                db.Database.Migrate();
         }
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env, ILoggerFactory loggerFactory)
@@ -63,10 +75,7 @@ namespace Spotkick
 
             app.UseStaticFiles()
                 .UseSwagger()
-                .UseSwaggerUI(c =>
-                {
-                    c.SwaggerEndpoint("/swagger/v1/swagger.json", "My API V1");
-                })
+                .UseSwaggerUI(c => { c.SwaggerEndpoint("/swagger/v1/swagger.json", "Spotkick API V1"); })
                 .UseMvc(routes =>
                 {
                     routes.MapRoute("default", "{controller=Spotkick}/{action=Index}/{id?}");

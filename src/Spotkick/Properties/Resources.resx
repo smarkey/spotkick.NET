@@ -117,44 +117,7 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <data name="DbConnectionString" xml:space="preserve">
-    <value>Server=localhost\SQLEXPRESS;Database=master;Trusted_Connection=True;</value>
-    <comment>The connection string for database connectivity</comment>
-  </data>
-  <data name="SpotifyClientId" xml:space="preserve">
-    <value />
-    <comment>Client ID used with the Spotify API</comment>
-  </data>
-  <data name="SpotifyClientSecret" xml:space="preserve">
-    <value />
-    <comment>Client Secret used with the Spotify API</comment>
-  </data>
-  <data name="SpotifyRedirectUrl" xml:space="preserve">
-    <value>http://localhost:6254/Spotkick/Callback</value>
-    <comment>Callback URL used after authenticating with Spotify</comment>
-  </data>
-  <data name="SpotifyScope" xml:space="preserve">
-    <value>user-read-email user-follow-read playlist-modify-private</value>
-    <comment>A list of scopes (permissions) required by the app to access Spotify resources</comment>
-  </data>
-  <data name="SpotifyAuthorizeUrl" xml:space="preserve">
-    <value>https://accounts.spotify.com/authorize</value>
-    <comment>Authorize URL used for authenticating with Spotify</comment>
-  </data>
-  <data name="SpotifyAccountsApiUrl" xml:space="preserve">
-    <value>https://accounts.spotify.com/api</value>
-    <comment>Account details URL for Spotify</comment>
-  </data>
-  <data name="SpotifyApiUrl" xml:space="preserve">
-    <value>https://api.spotify.com</value>
-    <comment>The API Url for the Spotify Service</comment>
-  </data>
-  <data name="SongkickApiUrl" xml:space="preserve">
-    <value>https://api.songkick.com</value>
-    <comment>The API Url for the Spotify Service</comment>
-  </data>
-  <data name="SongkickApiKey" xml:space="preserve">
-    <value />
-    <comment>The API key for the Songkick Service</comment>
+  <data name="SpotifyService_GetMostPopularTracks_range_for_number_of_tracks" xml:space="preserve">
+    <value>The number of tracks must be between 1 and 10.</value>
   </data>
 </root>

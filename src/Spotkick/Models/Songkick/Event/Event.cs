@@ -11,7 +11,7 @@ namespace Spotkick.Models.Songkick.Event
         public string DisplayName { get; set; }
         public object Start { get; set; }
         public object End { get; set; }
-        public List<object> Performance { get; set; }
+        public List<Performance> Performance { get; set; }
         public Location Location { get; set; }
         public object Venue { get; set; }
         public string Status { get; set; }

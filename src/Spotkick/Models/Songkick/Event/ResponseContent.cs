@@ -10,6 +10,9 @@ namespace Spotkick.Models.Songkick.Event
     public class ResultsPage
     {
         public Results Results { get; set; }
+        public int Page { get; set; }
+        public int PerPage { get; set; }
+        public int TotalEntries { get; set; }
     }
 
     public class Results

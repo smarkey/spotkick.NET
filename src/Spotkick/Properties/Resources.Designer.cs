@@ -61,92 +61,11 @@ namespace Spotkick.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Server=localhost\SQLEXPRESS;Database=master;Trusted_Connection=True;.
+        ///   Looks up a localized string similar to The number of tracks must be between 1 and 10..
         /// </summary>
-        internal static string DbConnectionString {
+        internal static string SpotifyService_GetMostPopularTracks_range_for_number_of_tracks {
             get {
-                return ResourceManager.GetString("DbConnectionString", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to .
-        /// </summary>
-        internal static string SongkickApiKey {
-            get {
-                return ResourceManager.GetString("SongkickApiKey", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to https://api.songkick.com.
-        /// </summary>
-        internal static string SongkickApiUrl {
-            get {
-                return ResourceManager.GetString("SongkickApiUrl", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to https://accounts.spotify.com/api.
-        /// </summary>
-        internal static string SpotifyAccountsApiUrl {
-            get {
-                return ResourceManager.GetString("SpotifyAccountsApiUrl", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to https://api.spotify.com.
-        /// </summary>
-        internal static string SpotifyApiUrl {
-            get {
-                return ResourceManager.GetString("SpotifyApiUrl", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to https://accounts.spotify.com/authorize.
-        /// </summary>
-        internal static string SpotifyAuthorizeUrl {
-            get {
-                return ResourceManager.GetString("SpotifyAuthorizeUrl", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to .
-        /// </summary>
-        internal static string SpotifyClientId {
-            get {
-                return ResourceManager.GetString("SpotifyClientId", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to .
-        /// </summary>
-        internal static string SpotifyClientSecret {
-            get {
-                return ResourceManager.GetString("SpotifyClientSecret", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to http://localhost:6254/Spotkick/Callback.
-        /// </summary>
-        internal static string SpotifyRedirectUrl {
-            get {
-                return ResourceManager.GetString("SpotifyRedirectUrl", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to user-read-email user-follow-read playlist-modify-private.
-        /// </summary>
-        internal static string SpotifyScope {
-            get {
-                return ResourceManager.GetString("SpotifyScope", resourceCulture);
+                return ResourceManager.GetString("SpotifyService_GetMostPopularTracks_range_for_number_of_tracks", resourceCulture);
             }
         }
     }

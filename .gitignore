@@ -261,3 +261,4 @@ __pycache__/
 *.pyc
 src/Spotkick/wwwroot/
 .sonarqube/
+*.feature.cs

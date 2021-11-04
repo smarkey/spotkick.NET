@@ -17,8 +17,8 @@ namespace Spotkick.Models
 
         private bool Equals(Artist other)
         {
-            return Id == other.Id && 
-                   SpotifyId == other.SpotifyId && 
+            return Id == other.Id &&
+                   SpotifyId == other.SpotifyId &&
                    SongkickId == other.SongkickId &&
                    Name.Equals(other.Name, StringComparison.OrdinalIgnoreCase);
         }
@@ -27,8 +27,7 @@ namespace Spotkick.Models
         {
             if (ReferenceEquals(null, obj)) return false;
             if (ReferenceEquals(this, obj)) return true;
-            if (obj.GetType() != this.GetType()) return false;
-            return Equals((Artist)obj);
+            return obj.GetType() == GetType() && Equals((Artist)obj);
         }
 
         public override int GetHashCode()

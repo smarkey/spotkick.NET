@@ -1,0 +1,18 @@
+﻿@{
+    ViewData["Title"] = "Welcome";
+}
+
+<h1>Welcome to Spotkick!</h1>
+
+<div class="row">
+    <div class="col-md-12">
+        <h3>What does Spotkick do?</h3>
+        <p>Spotkick creates a Spotify <strong>playlist</strong> featuring your <strong>favourite musicians</strong> who are <strong>playing in your area</strong>.</p>
+        <h3>Great! So what do you need from me?</h3>
+        <p>We need your permission to access your <strong>Spotify Followed Artists</strong>. You can grant permission by clicking the <strong>Fetch Followed Artists</strong> button below and logging into your Spotify account.</p>
+        <br/>
+        <form method="get" asp-controller="Spotkick" asp-action="Sso">
+            <input type="submit" name="sso" value="Fetch Followed Artists" class="btn btn-info" data-test-id="fetch-followed-artists-button"/>
+        </form>
+    </div>
+</div>

@@ -3,9 +3,11 @@ using System.Diagnostics;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
-using Spotkick.Enums;
+using Microsoft.Extensions.Options;
 using Spotkick.Interfaces;
+using Spotkick.Interfaces.Spotkick;
 using Spotkick.Models;
+using Spotkick.Models.Songkick.Event;
 using Spotkick.Services;
 
 namespace Spotkick.Controllers
@@ -13,57 +15,50 @@ namespace Spotkick.Controllers
     public class SpotkickController : Controller
     {
         public ISpotifyService SpotifyService;
-        public ISpotkickService SpotkickService;
+        private readonly IUserService _userService;
+        private readonly IArtistService _artistService;
 
-        public SpotkickController(ILogger<SpotkickController> logger, SpotkickContext dbContext)
+        public SpotkickController(
+            ILogger<SpotkickController> logger,
+            SpotkickContext dbContext,
+            IUserService userService,
+            IArtistService artistService,
+            IOptions<SpotifyConfig> spotifyConfig)
         {
-            SpotkickService = new SpotkickService(logger, dbContext);
-            SpotifyService = new SpotifyService(logger, dbContext, SpotkickService);
+            _userService = userService;
+            _artistService = artistService;
+            SpotifyService = new SpotifyService(logger, userService, artistService, spotifyConfig);
         }
 
-        public RedirectResult Index()
-        {
-            return Redirect(SpotifyService.AuthenticationUrl());
-        }
+        public IActionResult Index() => View();
+
+        public RedirectResult Sso() => Redirect(SpotifyService.AuthenticationUrl());
 
         public async Task<RedirectResult> Callback([FromQuery] string code)
         {
             var user = await SpotifyService.AuthenticateUser(code);
-
             return Redirect($"Discovery?userId={user.Id}");
         }
 
         public async Task<IActionResult> Discovery([FromQuery] int userId)
         {
-            ViewData["User"] = await SpotkickService.GetUser(userId);
-
+            ViewData["User"] = await _userService.GetUser(userId);
             return View();
         }
 
-        public async Task<IActionResult> Selection([FromQuery] int userId, [FromQuery] string city,
-            [FromQuery] DiscoveryOption discoveryOption)
+        public async Task<IActionResult> Selection([FromQuery] int userId, [FromQuery] string location)
         {
-            var artistsFilteredByCity = await SpotkickService.GetArtistsFilteredByCity(userId, city);
-
-            if (discoveryOption == DiscoveryOption.Default)
-            {
-                var topTracks = await SpotifyService.GetMostPopularTracks(artistsFilteredByCity, userId);
-                var playlist = await SpotifyService.CreatePlaylist(topTracks, userId, $"Gigs in {city}");
-
-                ViewData["Playlist"] = playlist;
-                return View("Playlist");
-            }
-
-            ViewData["SpotifyArtists"] = artistsFilteredByCity;
+            ViewData["Artists"] =
+                await _artistService.GetFollowedArtistsWithEventsUsingAreaCalendar(userId, new Location(location));
             ViewData["UserId"] = userId;
-            ViewData["City"] = city;
+            ViewData["Location"] = location;
             return View();
         }
 
-        public async Task<IActionResult> Playlist([FromQuery] int userId, List<long> artistIds)
+        public async Task<IActionResult> Playlist(int userId, List<long> artistIds, int numberOfTracks)
         {
-            var artists = await SpotkickService.GetArtists(artistIds);
-            var topTracks = await SpotifyService.GetMostPopularTracks(artists, userId);
+            var artists = await _artistService.GetArtistsById(artistIds);
+            var topTracks = await SpotifyService.GetMostPopularTracks(artists, userId, numberOfTracks);
 
             ViewData["Playlist"] = await SpotifyService.CreatePlaylist(topTracks, userId);
             return View();

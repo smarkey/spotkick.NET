@@ -1,19 +1,55 @@
-# spotkick.NET
+# Spotkick.NET
 
-## Database Migrations
-`dotnet ef migrations add InitialCreate`
+### What is Spotkick?
+Spotkick creates a Spotify **playlist** featuring your **favourite musicians** who are **playing in your area**.</p>
 
-`dotnet ef database update <date>_InitialCreate`
+### How does it achieve this goal?
+- **Songkick**: Used for Artist/Area performance data
+- **Spotify**: Used to establish the user's Followed Artists & to generate the Playlist
 
-## SQLExpress Setup
-You'll need the port number (dynamically assigned) in order to view the contents in Rider
+## Runbook
+
+### API Keys
+To run the application you'll need:
+- **API key** for **Songkick**
+- **Client ID** & **Client Secret** for **Spotify**
+
+### SQLExpress Setup
+
 1. Launch the SQL Server Configuration Manager.
 2. Select the SQL Server 2005 Network Configuration tab. There should be a Protocols for SQLExpress option, and one of the protocols should be TCP IP.
 3. Enable the TCP IP protocol if it is not enabled.
-4. The default port for SQL Express may not be 1433. To find the port it is listening on, right-click on the TCP IP protocol and scroll all the way down to the IP All heading.
+4. The default port for SQL Express may not be 1433**. To find the port it is listening on, right-click on the TCP IP protocol and scroll all the way down to the IP All heading.
 Make sure to restart SQL Express before trying to connect.
+
+** You'll need the port number (dynamically assigned) in order to view the contents in Rider
+
+### Running SpotKick
+
+Clicking the Play button in VS, VSCode or Rider should work. Alternatively you can use the .NET Core CLI:
+```
+cd src\Spotkick
+dotnet run
+```
+
+### Running SpotKick tests
+
+Clicking the Play button in VS, VSCode or Rider should work. Alternatively you can use the .NET Core CLI:
+```
+cd test\Spotkick.Test
+dotnet test
+```
+
+### Database Migrations
+
+Spotkick utilises Entity Framework. If you change the model you'll need to manage migrations:
+
+```
+dotnet ef migrations add InitialCreate
+dotnet ef database update <date>_InitialCreate
+```
    
-## SonarQube Analysis
+### SonarQube Analysis
 1. Pull the SonarQube image and spin up a container
     ```
     docker pull sonarqube

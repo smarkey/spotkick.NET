@@ -1,13 +1,13 @@
-namespace Spotkick.Models.Spotify
+namespace Spotkick.Models.Spotify.Artist
 {
     public class SpotifyArtist
     {
         public string Id { get; set; }
         public string Name { get; set; }
 
-        public Artist ToSpotkickArtist()
+        public Models.Artist ToSpotkickArtist()
         {
-            return new Artist
+            return new Models.Artist
             {
                 SpotifyId = Id,
                 Name = Name

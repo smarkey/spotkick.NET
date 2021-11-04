@@ -15,8 +15,8 @@ namespace Spotkick.Migrations
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "3.1.2")
                 .HasAnnotation("Relational:MaxIdentifierLength", 128)
+                .HasAnnotation("ProductVersion", "5.0.11")
                 .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
             modelBuilder.Entity("Spotkick.Models.Artist", b =>
@@ -35,12 +35,7 @@ namespace Spotkick.Migrations
                     b.Property<string>("SpotifyId")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int?>("UserId")
-                        .HasColumnType("int");
-
                     b.HasKey("Id");
-
-                    b.HasIndex("UserId");
 
                     b.ToTable("Artists");
                 });
@@ -115,18 +110,13 @@ namespace Spotkick.Migrations
                     b.ToTable("Users");
                 });
 
-            modelBuilder.Entity("Spotkick.Models.Artist", b =>
-                {
-                    b.HasOne("Spotkick.Models.User", null)
-                        .WithMany("FollowedArtists")
-                        .HasForeignKey("UserId");
-                });
-
             modelBuilder.Entity("Spotkick.Models.Playlist", b =>
                 {
                     b.HasOne("Spotkick.Models.User", "OwnedBy")
                         .WithMany("Playlists")
                         .HasForeignKey("OwnedById");
+
+                    b.Navigation("OwnedBy");
                 });
 
             modelBuilder.Entity("Spotkick.Models.User", b =>
@@ -134,6 +124,13 @@ namespace Spotkick.Migrations
                     b.HasOne("Spotkick.Models.Spotify.Token", "Token")
                         .WithMany()
                         .HasForeignKey("TokenId");
+
+                    b.Navigation("Token");
+                });
+
+            modelBuilder.Entity("Spotkick.Models.User", b =>
+                {
+                    b.Navigation("Playlists");
                 });
 #pragma warning restore 612, 618
         }

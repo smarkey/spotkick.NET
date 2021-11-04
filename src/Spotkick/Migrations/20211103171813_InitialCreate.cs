@@ -7,15 +7,30 @@ namespace Spotkick.Migrations
         protected override void Up(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.CreateTable(
+                name: "Artists",
+                columns: table => new
+                {
+                    Id = table.Column<long>(type: "bigint", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    SpotifyId = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    SongkickId = table.Column<int>(type: "int", nullable: true),
+                    Name = table.Column<string>(type: "nvarchar(max)", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Artists", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "Tokens",
                 columns: table => new
                 {
-                    Id = table.Column<int>(nullable: false)
+                    Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    AccessToken = table.Column<string>(nullable: true),
-                    TokenType = table.Column<string>(nullable: true),
-                    ExpiresIn = table.Column<long>(nullable: false),
-                    RefreshToken = table.Column<string>(nullable: true)
+                    AccessToken = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    TokenType = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    ExpiresIn = table.Column<long>(type: "bigint", nullable: false),
+                    RefreshToken = table.Column<string>(type: "nvarchar(max)", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -26,11 +41,11 @@ namespace Spotkick.Migrations
                 name: "Users",
                 columns: table => new
                 {
-                    Id = table.Column<int>(nullable: false)
+                    Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    DisplayName = table.Column<string>(nullable: true),
-                    TokenId = table.Column<int>(nullable: true),
-                    SpotifyUserId = table.Column<string>(nullable: true)
+                    DisplayName = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    TokenId = table.Column<int>(type: "int", nullable: true),
+                    SpotifyUserId = table.Column<string>(type: "nvarchar(max)", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -44,36 +59,14 @@ namespace Spotkick.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "Artists",
-                columns: table => new
-                {
-                    Id = table.Column<long>(nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    SpotifyId = table.Column<string>(nullable: true),
-                    SongkickId = table.Column<int>(nullable: true),
-                    Name = table.Column<string>(nullable: true),
-                    UserId = table.Column<int>(nullable: true)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Artists", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_Artists_Users_UserId",
-                        column: x => x.UserId,
-                        principalTable: "Users",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
-                });
-
-            migrationBuilder.CreateTable(
                 name: "Playlists",
                 columns: table => new
                 {
-                    Id = table.Column<int>(nullable: false)
+                    Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    SpotifyId = table.Column<string>(nullable: true),
-                    Name = table.Column<string>(nullable: true),
-                    OwnedById = table.Column<int>(nullable: true)
+                    SpotifyId = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    Name = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    OwnedById = table.Column<int>(type: "int", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -85,11 +78,6 @@ namespace Spotkick.Migrations
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Restrict);
                 });
-
-            migrationBuilder.CreateIndex(
-                name: "IX_Artists_UserId",
-                table: "Artists",
-                column: "UserId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Playlists_OwnedById",

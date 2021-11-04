@@ -1,4 +1,4 @@
-﻿namespace Spotkick.Models.Spotify
+﻿namespace Spotkick.Models.Spotify.Track
 {
     public class Track
     {

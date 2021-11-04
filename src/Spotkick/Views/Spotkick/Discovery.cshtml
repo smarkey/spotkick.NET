@@ -1,24 +1,27 @@
-﻿@using Spotkick.Enums
-@{
-    ViewData["Title"] = "Discovery";
-    
-    var user = (User) ViewData["User"];
+﻿@{
+    ViewData["Title"] = "Location";
+
+    var user = (User)ViewData["User"];
 }
+
+<h1>Location</h1>
 
 <div class="row">
     <div class="col-md-12">
-        <h2>Welcome @user.DisplayName</h2>
-        <p>To get started we'll need to discover which Artists you follow on Spotify.</p>
-        <p>We will then check if they are visiting your town.</p>
+        <p>We'll check which of your <strong>favourite musicians</strong> are <strong>playing in your area</strong>.</p>
         <form method="get" asp-controller="Spotkick" asp-action="Selection">
             <input hidden name="userId" value="@user.Id"/>
-            <select name="city" class="custom-select custom-select-lg mb-3">
-                <option value="Bristol">Bristol</option>
-                <option value="Bath">Bath</option>
-            </select>
-            <br/>
-            <input type="submit" name="discoveryOption" value="@DiscoveryOption.Default" class="btn btn-info" alt="This will allow you to configure details about the playlist to generate" />
-            <input type="submit" name="discoveryOption" value="@DiscoveryOption.Wizard" class="btn btn-info" alt="This will generate a playlist with one song for each of your followed artists playing in your area" />
+            <label>
+                Select your area:
+                <select name="location">
+                    <option value="Bristol, UK">Bristol</option>
+                    <option value="Bath, UK">Bath</option>
+                    <option value="London, UK">London</option>
+                    <option value="Cardiff, UK">Cardiff</option>
+                    <option value="Dublin, Ireland">Dublin</option>
+                </select>
+            </label>
+            <input type="submit" value="Next" class="btn btn-info"/>
         </form>
     </div>
 </div>

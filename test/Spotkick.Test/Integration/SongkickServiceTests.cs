@@ -1,13 +1,16 @@
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Moq;
 using Shouldly;
-using Spotkick.Interfaces.Spotkick;
+using Spotkick.Interfaces;
 using Spotkick.Models;
+using Spotkick.Models.Songkick;
 using Spotkick.Models.Songkick.Event;
-using Spotkick.Services;
+using Spotkick.Services.Songkick;
 using Xunit;
 
 namespace Spotkick.Test.Integration
@@ -18,8 +21,16 @@ namespace Spotkick.Test.Integration
 
         public SongkickServiceTests()
         {
-            _sut = new SongkickService(It.IsAny<ILogger>(), It.IsAny<IArtistService>(),
-                new Mock<IOptions<SongkickConfig>>().Object);
+            var config = new ConfigurationBuilder()
+                .AddJsonFile("appsettings.Development.json")
+                .Build()
+                .GetSection("Songkick")
+                .Get<SongkickConfig>();
+
+            _sut = new SongkickService(
+                new Mock<ILogger>().Object,
+                new Mock<IArtistService>().Object,
+                Options.Create(config));
         }
 
         [Fact]
@@ -29,7 +40,7 @@ namespace Spotkick.Test.Integration
             const string artistName = "nirvana";
 
             // Act
-            var artist = await _sut.GetArtist(artistName);
+            var artist = await _sut.GetArtistByName(artistName);
 
             // Assert
             artist.Id.ShouldBe(250695);
@@ -44,7 +55,7 @@ namespace Spotkick.Test.Integration
         public async Task ShouldBeAbleToRetrieveTheEventsForAnArtist()
         {
             // Arrange + Act
-            var events = await _sut.GetEventsForArtist("Foals");
+            var events = await _sut.GetEventsForArtistsByArtistName("Foals");
 
             // Assert
             events.Count().ShouldBeGreaterThan(0);
@@ -71,8 +82,8 @@ namespace Spotkick.Test.Integration
             var events = await _sut.GetEventsForLocation(new Location(location));
 
             // Assert
-            events?.Count().ShouldBeGreaterThan(0);
-            events?.FirstOrDefault().Location.City.ShouldBe(location);
+            events.Count().ShouldBeGreaterThan(0);
+            events.FirstOrDefault().Location.City.ShouldBe(location);
         }
 
         [Theory]
@@ -85,6 +96,24 @@ namespace Spotkick.Test.Integration
 
             // Assert
             artists?.Count().ShouldBeGreaterThan(0);
+        }
+
+        [Theory]
+        [InlineData("Nirvana", 0)]
+        [InlineData("Anthrax", 1)]
+        public async Task ShouldBeAbleToRetrieveArtistsWithUpcomingEvents(string artistName, int artistsWithEventsCount)
+        {
+            // Arrange + Act
+            var artist = await _sut.GetArtistByName(artistName);
+            var artists = await _sut.FilterArtistsWithEventsInLocation(
+                new List<Artist>
+                {
+                    artist.ToSpotkickArtist()
+                },
+                new Location("Bristol, UK"));
+
+            // Assert
+            artists.Count().ShouldBe(artistsWithEventsCount);
         }
     }
 }

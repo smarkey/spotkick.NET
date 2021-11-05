@@ -45,7 +45,10 @@ dotnet test
 Spotkick utilises Entity Framework. If you change the model you'll need to manage migrations:
 
 ```
+cd src\Spotkick
 dotnet ef migrations add InitialCreate
+
+# The application Startup also checks for new mig scripts and runs if necessary so it's possible to skip this
 dotnet ef database update <date>_InitialCreate
 ```
    

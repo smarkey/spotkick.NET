@@ -9,11 +9,7 @@ namespace Spotkick.Models
         public string SpotifyId { get; init; }
         public int? SongkickId { get; set; }
         public string Name { get; init; }
-
-        public override string ToString()
-        {
-            return $"{Name}, ID: {Id}, Spotify: {SpotifyId}, Songkick: {SongkickId}";
-        }
+        public override string ToString() => $"{Name}, ID: {Id}, Spotify: {SpotifyId}, Songkick: {SongkickId}";
 
         private bool Equals(Artist other)
         {

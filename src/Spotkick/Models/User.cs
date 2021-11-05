@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using Spotkick.Models.Spotify;
+using Spotkick.Models.Spotify.User;
 
 namespace Spotkick.Models
 {

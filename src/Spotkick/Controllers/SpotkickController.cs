@@ -5,10 +5,12 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Spotkick.Interfaces;
-using Spotkick.Interfaces.Spotkick;
+using Spotkick.Interfaces.Spotify;
 using Spotkick.Models;
 using Spotkick.Models.Songkick.Event;
+using Spotkick.Models.Spotify;
 using Spotkick.Services;
+using Spotkick.Services.Spotify;
 
 namespace Spotkick.Controllers
 {
@@ -20,7 +22,6 @@ namespace Spotkick.Controllers
 
         public SpotkickController(
             ILogger<SpotkickController> logger,
-            SpotkickContext dbContext,
             IUserService userService,
             IArtistService artistService,
             IOptions<SpotifyConfig> spotifyConfig)

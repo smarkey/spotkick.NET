@@ -1,19 +1,21 @@
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
-using Spotkick.Interfaces.Spotkick;
+using Spotkick.Interfaces;
 using Spotkick.Models;
 using Spotkick.Models.Songkick.Event;
-using Spotkick.Services;
+using Spotkick.Models.Spotify;
+using Spotkick.Services.Spotify;
 using Swashbuckle.Swagger.Annotations;
 
 namespace Spotkick.Controllers
 {
     [ApiController]
     [Route("user/{userId:int}")]
-    public class SpotkickApiController : Controller
+    public class SpotkickApiController : ControllerBase
     {
         private readonly IArtistService _artistService;
         private readonly IUserService _userService;
@@ -28,35 +30,40 @@ namespace Spotkick.Controllers
         }
 
         [HttpGet]
+        [ProducesResponseType(typeof(User), StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
         [SwaggerOperation(OperationId = "User.Read", Tags = new[] { "UserEndpoint" })]
         public async Task<ActionResult<User>> GetUserDetails(int userId)
         {
-            var result = await _userService.GetUser(userId);
+            var user = await _userService.GetUser(userId);
 
-            if (result == null)
+            if (user == null)
             {
                 return NotFound();
             }
 
-            return Ok(result);
+            user.Token = null;
+            return Ok(user);
         }
 
         [HttpGet("artist")]
+        [ProducesResponseType(typeof(IEnumerable<Artist>), StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
         [SwaggerOperation(OperationId = "Artist.Read", Tags = new[] { "UserArtistEndpoint" })]
         public async Task<ActionResult<IEnumerable<Artist>>> GetFollowedArtists(int userId, [FromQuery] string location)
         {
             var result =
                 await _artistService.GetFollowedArtistsWithEventsUsingAreaCalendar(userId, new Location(location));
 
-            if (result == null)
-            {
-                return NotFound();
-            }
-
             return Ok(result);
         }
 
         [HttpPost("playlist")]
+        [ProducesResponseType(typeof(List<Playlist>), StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
         [SwaggerOperation(OperationId = "Playlist.Create", Tags = new[] { "UserPlaylistEndpoint" })]
         public async Task<ActionResult<Playlist>> CreatePlaylist(int userId, [FromBody] CreatePlaylistCommand command)
         {
@@ -64,7 +71,9 @@ namespace Spotkick.Controllers
             var topTracks = await _spotifyService.GetMostPopularTracks(artists, userId, command.NumberOfTracks);
             var playlist = await _spotifyService.CreatePlaylist(topTracks, userId);
 
-            return Ok(playlist);
+            playlist.OwnedBy = null;
+
+            return Created(playlist.SpotifyId, playlist);
         }
     }
 

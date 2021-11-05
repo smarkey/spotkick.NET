@@ -1,41 +1,46 @@
+using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Moq;
 using Shouldly;
 using Spotkick.Controllers;
 using Spotkick.Interfaces;
-using Spotkick.Interfaces.Spotkick;
+using Spotkick.Interfaces.Spotify;
 using Spotkick.Models;
 using Spotkick.Models.Songkick.Event;
 using Spotkick.Models.Spotify;
 using Spotkick.Models.Spotify.Track;
-using Spotkick.Services.Spotkick;
+using Spotkick.Services;
 using Xunit;
-using ILogger = Castle.Core.Logging.ILogger;
 
 namespace Spotkick.Test.Unit
 {
     public class SongkickControllerTests
     {
         private SpotkickController _sut;
-
         private readonly User _testUser = new() { Id = 999 };
-        private readonly Mock<ILogger<SpotkickController>> mockLogger = new();
-        private readonly Mock<SpotkickContext> mockDbOptions = new(new DbContextOptionsBuilder<SpotkickContext>().Options);
-        private static readonly Mock<UserService> mockUserService = new(It.IsAny<ILogger>(), new DbContextOptionsBuilder<SpotkickContext>().Options);
-        private readonly Mock<ArtistService> mockArtistService = new(It.IsAny<ILogger>(), new DbContextOptionsBuilder<SpotkickContext>().Options, mockUserService);
-        private readonly Mock<IOptions<SpotifyConfig>> mockSpotifyConfig = new();
-        
+        private readonly IOptions<SpotifyConfig> _spotifyConfig = Options.Create(new SpotifyConfig
+        {
+            AccountsUrl = new Uri("https://stub.api/api"),
+            ApiUrl = new Uri("https://stub.api"),
+            AuthorizeUrl = new Uri("https://stub.api/authorize"),
+            ClientId = "123",
+            ClientSecret = "shhhh",
+            CallbackUrl = new Uri("https://stub.callback.api/Spotkick/Callback")
+        });
+
         [Fact]
         public async Task WhenINavigateToIndex_ThenIShouldLandOnTheHomePage()
         {
             // Arrange
-            _sut = new SpotkickController(mockLogger.Object, mockDbOptions.Object, mockUserService.Object,
-                mockArtistService.Object, mockSpotifyConfig.Object);
+            _sut = new SpotkickController(
+                It.IsAny<ILogger<SpotkickController>>(),
+                It.IsAny<UserService>(),
+                It.IsAny<ArtistService>(),
+                _spotifyConfig);
 
             // Act
             var result = _sut.Index() as ViewResult;
@@ -46,18 +51,21 @@ namespace Spotkick.Test.Unit
         }
 
         [Fact]
-        public async Task WhenINavigateToTheSSOPage__ThenIShouldBeRedirectedToSpotifyToLogin()
+        public async Task WhenINavigateToTheSSOPage_ThenIShouldBeRedirectedToSpotifyToLogin()
         {
             // Arrange
-            _sut = new SpotkickController(mockLogger.Object, mockDbOptions.Object, mockUserService.Object,
-                mockArtistService.Object, mockSpotifyConfig.Object);
+            _sut = new SpotkickController(
+                It.IsAny<ILogger<SpotkickController>>(),
+                It.IsAny<UserService>(),
+                It.IsAny<ArtistService>(),
+                _spotifyConfig);
 
             // Act
             var result = _sut.Sso();
 
             // Assert
             result?.ShouldBeOfType<RedirectResult>();
-            result?.Url.ShouldContain("spotify");
+            result?.Url.ShouldContain("/authorize?scope=");
         }
 
         [Fact]
@@ -65,12 +73,18 @@ namespace Spotkick.Test.Unit
             WhenIHaveCompletedSpotifyLoginAndGrantedPermissions_ThenIShouldBeRedirectedToTheDiscoveryPage()
         {
             // Arrange
-            var spotifyServiceMock = new Mock<ISpotifyService>();
-            spotifyServiceMock
+            _sut = new SpotkickController(
+                It.IsAny<ILogger<SpotkickController>>(),
+                It.IsAny<UserService>(),
+                It.IsAny<ArtistService>(),
+                _spotifyConfig);
+
+            var spotifyServiceMockWithInteractions = new Mock<ISpotifyService>();
+            spotifyServiceMockWithInteractions
                 .Setup(service => service.AuthenticateUser(It.IsAny<string>()))
                 .ReturnsAsync(_testUser);
 
-            _sut.SpotifyService = spotifyServiceMock.Object;
+            _sut.SpotifyService = spotifyServiceMockWithInteractions.Object;
 
             // Act
             var result = await _sut.Callback("auth_code_string_provided_by_spotify");
@@ -89,8 +103,11 @@ namespace Spotkick.Test.Unit
                 .Setup(service => service.GetUser(It.IsAny<int>()))
                 .ReturnsAsync(_testUser);
 
-            _sut = new SpotkickController(mockLogger.Object, mockDbOptions.Object,
-                userServiceMockWithInteractions.Object, mockArtistService.Object, mockSpotifyConfig.Object);
+            _sut = new SpotkickController(
+                It.IsAny<ILogger<SpotkickController>>(),
+                userServiceMockWithInteractions.Object,
+                It.IsAny<ArtistService>(),
+                _spotifyConfig);
 
             // Act
             var result = await _sut.Discovery(_testUser.Id) as ViewResult;
@@ -103,6 +120,7 @@ namespace Spotkick.Test.Unit
         public async Task WhenINavigateToSelection_ThenIShouldLandOnThePlaylistPage()
         {
             // Arrange
+
             const string city = "New York";
 
             var testArtistsList = new List<Artist>
@@ -119,11 +137,14 @@ namespace Spotkick.Test.Unit
             var artistServiceMockWithInteractions = new Mock<IArtistService>();
             artistServiceMockWithInteractions
                 .Setup(service =>
-                    service.GetArtistsWithUpcomingEventsUsingArtistCalendar(It.IsAny<int>(), It.IsAny<Location>()))
+                    service.GetFollowedArtistsWithEventsUsingAreaCalendar(It.IsAny<int>(), It.IsAny<Location>()))
                 .ReturnsAsync(testArtistsList);
 
-            _sut = new SpotkickController(mockLogger.Object, mockDbOptions.Object, mockUserService.Object,
-                artistServiceMockWithInteractions.Object, mockSpotifyConfig.Object);
+            _sut = new SpotkickController(
+                It.IsAny<ILogger<SpotkickController>>(),
+                It.IsAny<UserService>(),
+                artistServiceMockWithInteractions.Object,
+                _spotifyConfig);
 
             // Act
             var result = await _sut.Selection(_testUser.Id, city) as ViewResult;
@@ -166,19 +187,22 @@ namespace Spotkick.Test.Unit
                 .Setup(service => service.GetArtistsById(It.IsAny<List<long>>()))
                 .ReturnsAsync(testArtistsList);
 
-            var spotifyServiceMock = new Mock<ISpotifyService>();
-            spotifyServiceMock
+            var spotifyServiceMockWithInteractions = new Mock<ISpotifyService>();
+            spotifyServiceMockWithInteractions
                 .Setup(service => service.GetMostPopularTracks(testArtistsList, It.IsAny<int>(), It.IsAny<int>()))
                 .ReturnsAsync(trackList);
 
-            spotifyServiceMock
-                .Setup(service => service.CreatePlaylist(trackList, It.IsAny<int>(), It.IsAny<string>()))
+            spotifyServiceMockWithInteractions
+                .Setup(service => service.CreatePlaylist(trackList, It.IsAny<int>()))
                 .ReturnsAsync(new Playlist());
 
-            _sut = new SpotkickController(mockLogger.Object, mockDbOptions.Object, mockUserService.Object,
-                artistServiceMockWithInteractions.Object, mockSpotifyConfig.Object);
+            _sut = new SpotkickController(
+                It.IsAny<ILogger<SpotkickController>>(),
+                It.IsAny<UserService>(),
+                artistServiceMockWithInteractions.Object,
+                _spotifyConfig);
 
-            _sut.SpotifyService = spotifyServiceMock.Object;
+            _sut.SpotifyService = spotifyServiceMockWithInteractions.Object;
 
             // Act
             var result = await _sut.Playlist(_testUser.Id, new List<long>(), 1) as ViewResult;

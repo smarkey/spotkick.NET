@@ -9,11 +9,11 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Serilog;
 using Spotkick.Interfaces;
-using Spotkick.Interfaces.Spotkick;
 using Spotkick.Models;
+using Spotkick.Models.Songkick;
+using Spotkick.Models.Spotify;
 using Spotkick.Properties;
 using Spotkick.Services;
-using Spotkick.Services.Spotkick;
 
 namespace Spotkick
 {
@@ -44,16 +44,16 @@ namespace Spotkick
             services.Configure<SpotifyConfig>(Configuration.GetSection("Spotify"));
             services.Configure<SongkickConfig>(Configuration.GetSection("Songkick"));
 
-            services.AddDbContext<SpotkickContext>(options =>
+            services.AddDbContext<SpotkickDbContext>(options =>
             {
                 options.UseSqlServer(Configuration.GetConnectionString("Default"));
                 options.LogTo(_ => Debug.WriteLine(_));
             });
 
-            var optionsBuilder = new DbContextOptionsBuilder<SpotkickContext>();
+            var optionsBuilder = new DbContextOptionsBuilder<SpotkickDbContext>();
             optionsBuilder.UseSqlServer(Configuration.GetConnectionString("Default"));
 
-            using var db = new SpotkickContext(optionsBuilder.Options);
+            using var db = new SpotkickDbContext(optionsBuilder.Options);
             var migrationsToRun = db.Database.GetPendingMigrations();
             
             if (migrationsToRun.Any())
@@ -70,7 +70,7 @@ namespace Spotkick
             }
             else
             {
-                app.UseExceptionHandler("/Spotkick/Error");
+                app.UseExceptionHandler("/Shared/Error");
             }
 
             app.UseStaticFiles()

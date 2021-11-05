@@ -1,0 +1,28 @@
+{
+  "$schema": "http://json-schema.org/draft-04/schema#",
+  "type": "object",
+  "properties": {
+    "id": {
+      "type": "integer"
+    },
+    "displayName": {
+      "type": "string"
+    },
+    "token": {
+      "type": "null"
+    },
+    "playlists": {
+      "type": "null"
+    },
+    "spotifyUserId": {
+      "type": "string"
+    }
+  },
+  "required": [
+    "id",
+    "displayName",
+    "token",
+    "playlists",
+    "spotifyUserId"
+  ]
+}

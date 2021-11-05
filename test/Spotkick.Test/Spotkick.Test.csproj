@@ -12,6 +12,7 @@
     <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.0.0" />
     <PackageReference Include="Moq" Version="4.16.1" />
     <PackageReference Include="NETStandard.Library" Version="2.0.3" />
+    <PackageReference Include="NJsonSchema" Version="10.5.2" />
     <PackageReference Include="NSubstitute" Version="4.2.2" />
     <PackageReference Include="Selenium.WebDriver" Version="4.0.1" />
     <PackageReference Include="Selenium.WebDriver.ChromeDriver" Version="95.0.4638.5401" />
@@ -31,6 +32,9 @@
 
   <ItemGroup>
     <ProjectReference Include="..\..\src\Spotkick\Spotkick.csproj" />
+    <Content Include="..\..\test\Spotkick.Test\API\Schemas\*.json">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
   </ItemGroup>
 
 </Project>

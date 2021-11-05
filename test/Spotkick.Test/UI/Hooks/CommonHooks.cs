@@ -14,13 +14,13 @@ namespace Spotkick.Test.UI.Hooks
             _context = context;
         }
 
-        [BeforeScenario]
+        [BeforeScenario("ui")]
         public void BeforeScenario()
         {
             _context.Driver = Chrome();
         }
 
-        [AfterScenario]
+        [AfterScenario("ui")]
         public void AfterScenario()
         {
             _context.Driver.Close();

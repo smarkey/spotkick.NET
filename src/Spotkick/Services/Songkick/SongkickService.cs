@@ -9,7 +9,6 @@ using System.Web;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Newtonsoft.Json.Linq;
-using Spotkick.Interfaces;
 using Spotkick.Interfaces.Songkick;
 using Spotkick.Models;
 using Spotkick.Models.Songkick;
@@ -23,10 +22,9 @@ namespace Spotkick.Services.Songkick
         public ILogger _logger { get; set; }
         public HttpClient _client { get; set; }
         public JsonSerializerOptions _serializerOptions { get; set; }
-        private IArtistService _artistService { get; }
         private readonly SongkickConfig _songkickConfig;
 
-        public SongkickService(ILogger logger, IArtistService artistService, IOptions<SongkickConfig> config)
+        public SongkickService(ILogger logger, IOptions<SongkickConfig> config)
         {
             _logger = logger;
             _songkickConfig = config.Value;
@@ -42,7 +40,6 @@ namespace Spotkick.Services.Songkick
             {
                 PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
             };
-            _artistService = artistService;
         }
 
         public async Task<SongkickArtist> GetArtistByName(string artistName)
@@ -152,7 +149,7 @@ namespace Spotkick.Services.Songkick
         public async Task<IEnumerable<Artist>> GetArtistsWithEventsInLocation(Location location) =>
             (await GetEventsForLocation(location))
             .SelectMany(e => e.Performance)
-            .Select(_ => _.Artist.ToSpotkickArtist())
+            .Select(performance =>  performance.Artist.ToSpotkickArtist())
             .Distinct();
     }
 }

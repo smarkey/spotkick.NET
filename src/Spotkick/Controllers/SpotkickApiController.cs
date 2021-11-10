@@ -14,7 +14,7 @@ using Swashbuckle.Swagger.Annotations;
 namespace Spotkick.Controllers
 {
     [ApiController]
-    [Route("user/{userId:int}")]
+    [Route("user/{userId}")]
     public class SpotkickApiController : ControllerBase
     {
         private readonly IArtistService _artistService;
@@ -34,9 +34,9 @@ namespace Spotkick.Controllers
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [SwaggerOperation(OperationId = "User.Read", Tags = new[] { "UserEndpoint" })]
-        public async Task<ActionResult<User>> GetUserDetails(int userId)
+        public async Task<ActionResult<User>> GetUserDetails(string userId)
         {
-            var user = await _userService.GetUser(userId);
+            var user = await _userService.GetUserById(userId);
 
             if (user == null)
             {
@@ -52,7 +52,8 @@ namespace Spotkick.Controllers
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [SwaggerOperation(OperationId = "Artist.Read", Tags = new[] { "UserArtistEndpoint" })]
-        public async Task<ActionResult<IEnumerable<Artist>>> GetFollowedArtists(int userId, [FromQuery] string location)
+        public async Task<ActionResult<IEnumerable<Artist>>> GetFollowedArtists(string userId,
+            [FromQuery] string location)
         {
             var result =
                 await _artistService.GetFollowedArtistsWithEventsUsingAreaCalendar(userId, new Location(location));
@@ -65,14 +66,16 @@ namespace Spotkick.Controllers
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [SwaggerOperation(OperationId = "Playlist.Create", Tags = new[] { "UserPlaylistEndpoint" })]
-        public async Task<ActionResult<Playlist>> CreatePlaylist(int userId, [FromBody] CreatePlaylistCommand command)
+        public async Task<ActionResult<Playlist>> CreatePlaylist(string userId,
+            [FromBody] CreatePlaylistCommand command)
         {
+            var user = await _userService.GetUserById(userId);
             var artists = await _artistService.GetArtistsById(command.ArtistIds);
-            var topTracks = await _spotifyService.GetMostPopularTracks(artists, userId, command.NumberOfTracks);
-            var playlist = await _spotifyService.CreatePlaylist(topTracks, userId);
+            var topTracks =
+                await _spotifyService.GetMostPopularTracks(artists, user.SpotifyUserId, command.NumberOfTracks);
+            var playlist = await _spotifyService.CreatePlaylist(topTracks, user.SpotifyUserId);
 
             playlist.OwnedBy = null;
-
             return Created(playlist.SpotifyId, playlist);
         }
     }

@@ -7,20 +7,20 @@ So that I can utilise its capabilities
     @user
     Scenario: I can retrieve a user
         Given I have access to the Spotkick API
-        When I perform a 'GET' on the 'user/1' endpoint
+        When I perform a 'GET' on the 'user/00000000-0000-0000-0000-000000000000' endpoint
         Then I get a response of '200'
         And the response body matches the json schema for a 'User'
 
     @artist
     Scenario: I can retrieve a user's followed artist
         Given I have access to the Spotkick API
-        When I perform a 'GET' on the 'user/1/artist?location=Bristol%2C%20UK' endpoint
+        When I perform a 'GET' on the 'user/00000000-0000-0000-0000-000000000000/artist?location=Bristol%2C%20UK' endpoint
         Then I get a response of '200'
         And the response body matches the json schema for a 'List of Artists'
 
     @playlist
     Scenario: I can create a playlist for an artist
         Given I have access to the Spotkick API
-        When I perform a 'POST' on the 'user/1/playlist' endpoint with the payload '{"artistIds": [1],"numberOfTracks": 1}'
+        When I perform a 'POST' on the 'user/00000000-0000-0000-0000-000000000000/playlist' endpoint with the payload '{"artistIds": [1],"numberOfTracks": 1}'
         Then I get a response of '201'
         And the response body matches the json schema for a 'Playlist'

@@ -3,7 +3,7 @@
 
     var artists = (List<Artist>)ViewData["Artists"];
     var location = (string)ViewData["Location"];
-    var userId = (int)ViewData["UserId"];
+    var userId = (string)ViewData["UserId"];
 
     artists.Sort((x, y) => string.Compare(x.Name, y.Name, StringComparison.Ordinal));
 }

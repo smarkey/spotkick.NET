@@ -7,10 +7,11 @@ namespace Spotkick.Interfaces.Spotify
 {
     public interface ISpotifyService : IThirdPartyService
     {
-        Task<User> AuthenticateUser(string spotifyAuthCode);
         string AuthenticationUrl();
-        Task<IEnumerable<Artist>> GetFollowedArtists(int userId);
-        Task<IEnumerable<Track>> GetMostPopularTracks(IEnumerable<Artist> artists, int userId, int numberOfTracks = 1);
-        Task<Playlist> CreatePlaylist(IEnumerable<Track> tracks, int userId);
+        Task<User> AuthenticateUser(string spotifyAuthCode);
+        Task<IEnumerable<Artist>> GetFollowedArtists(string userId);
+        Task<IEnumerable<Track>> GetMostPopularTracks(IEnumerable<Artist> artists, string spotifyUserId,
+            int numberOfTracks = 1);
+        Task<Playlist> CreatePlaylist(IEnumerable<Track> tracks, string spotifyUserId);
     }
 }

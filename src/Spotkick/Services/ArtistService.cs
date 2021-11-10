@@ -3,6 +3,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
+using Spotkick.Data;
 using Spotkick.Interfaces;
 using Spotkick.Models;
 using Spotkick.Models.Songkick;
@@ -30,7 +31,7 @@ namespace Spotkick.Services
             _logger = logger;
             _dbContext = dbContext;
             _spotifyService = new SpotifyService(logger, userService, this, spotifyConfig);
-            _songkickService = new SongkickService(logger, this, songkickConfig);
+            _songkickService = new SongkickService(logger, songkickConfig);
         }
 
         public async Task CreateArtists(IEnumerable<Artist> artists)
@@ -63,8 +64,7 @@ namespace Spotkick.Services
                 .Where(a => a != null);
         }
 
-        public async Task<IEnumerable<Artist>> GetFollowedArtistsWithEventsUsingAreaCalendar(int userId,
-            Location location)
+        public async Task<IEnumerable<Artist>> GetFollowedArtistsWithEventsUsingAreaCalendar(string userId, Location location)
         {
             var artistsWithEvents = (await _songkickService.GetArtistsWithEventsInLocation(location)).ToList();
             var followedArtists = (await _spotifyService.GetFollowedArtists(userId)).ToList();

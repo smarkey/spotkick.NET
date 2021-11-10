@@ -1,13 +1,11 @@
 ﻿using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
-using Spotkick.Models.Spotify;
+using Microsoft.AspNetCore.Identity;
 using Spotkick.Models.Spotify.User;
 
 namespace Spotkick.Models
 {
-    public class User
+    public class User : IdentityUser
     {
-        [Key] public int Id { get; set; }
         public string DisplayName { get; set; }
         public Token Token { get; set; }
         public List<Playlist> Playlists { get; set; }

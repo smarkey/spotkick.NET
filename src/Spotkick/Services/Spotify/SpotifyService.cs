@@ -107,19 +107,21 @@ namespace Spotkick.Services.Spotify
 
             var spotifyUser = await GetSpotifyUser(authToken);
 
-            var user = await _userService.GetUser(spotifyUser.Id);
+            var user = await _userService.GetUserBySpotifyId(spotifyUser.Id);
             if (user != null) return user;
 
             user = new User
             {
                 SpotifyUserId = spotifyUser.Id,
+                UserName = $"{spotifyUser.Id}@spotkick.com",
+                Email = $"{spotifyUser.Id}@spotkick.com",
                 DisplayName = spotifyUser.DisplayName,
                 Token = authToken
             };
-
+            
             await _userService.CreateUser(user);
 
-            return user;
+            return await _userService.GetUserBySpotifyId(spotifyUser.Id);
         }
 
         private async Task<User> RefreshAccessToken(User user)
@@ -149,9 +151,9 @@ namespace Spotkick.Services.Spotify
             return user;
         }
 
-        public async Task<IEnumerable<Artist>> GetFollowedArtists(int userId)
+        public async Task<IEnumerable<Artist>> GetFollowedArtists(string userId)
         {
-            var user = await _userService.GetUser(userId);
+            var user = await _userService.GetUserBySpotifyId(userId);
             _logger.LogInformation("Fetching Spotify artists followed by {DisplayName}", user.DisplayName);
 
             user = await RefreshAccessToken(user);
@@ -185,14 +187,14 @@ namespace Spotkick.Services.Spotify
             return artists;
         }
 
-        public async Task<IEnumerable<Track>> GetMostPopularTracks(IEnumerable<Artist> artists, int userId,
+        public async Task<IEnumerable<Track>> GetMostPopularTracks(IEnumerable<Artist> artists, string spotifyUserId,
             int numberOfTracks = 1)
         {
             if (numberOfTracks is < 1 or > 10)
                 throw new ArgumentOutOfRangeException(nameof(numberOfTracks),
                     Resources.SpotifyService_GetMostPopularTracks_range_for_number_of_tracks);
 
-            var user = await _userService.GetUser(userId);
+            var user = await _userService.GetUserBySpotifyId(spotifyUserId);
             user = await RefreshAccessToken(user);
 
             _client.DefaultRequestHeaders.Authorization =
@@ -235,15 +237,14 @@ namespace Spotkick.Services.Spotify
             return tracks;
         }
 
-        public async Task<Playlist> CreatePlaylist(IEnumerable<Track> tracks, int userId)
+        public async Task<Playlist> CreatePlaylist(IEnumerable<Track> tracks, string spotifyUserId)
         {
-            var user = await _userService.GetUser(userId);
+            var user = await _userService.GetUserBySpotifyId(spotifyUserId);
             user = await RefreshAccessToken(user);
 
             _client.DefaultRequestHeaders.Authorization =
                 new AuthenticationHeaderValue("Bearer", user.Token.AccessToken);
-
-            var spotifyUserId = user.SpotifyUserId;
+            
             var playlistName = $"Events after {DateTime.Today:yy-MM-dd} [Spotkick]";
             var playlistJson = $"{{\"name\":\"{playlistName}\",\"public\":false}}";
 

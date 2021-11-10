@@ -6,7 +6,6 @@ using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Moq;
 using Shouldly;
-using Spotkick.Interfaces;
 using Spotkick.Models;
 using Spotkick.Models.Songkick;
 using Spotkick.Models.Songkick.Event;
@@ -29,7 +28,6 @@ namespace Spotkick.Test.Integration
 
             _sut = new SongkickService(
                 new Mock<ILogger>().Object,
-                new Mock<IArtistService>().Object,
                 Options.Create(config));
         }
 
@@ -79,11 +77,11 @@ namespace Spotkick.Test.Integration
         public async Task ShouldBeAbleToRetrieveTheEventsForALocation(string location)
         {
             // Arrange + Act
-            var events = await _sut.GetEventsForLocation(new Location(location));
+            var events = (await _sut.GetEventsForLocation(new Location(location))).ToList();
 
             // Assert
-            events.Count().ShouldBeGreaterThan(0);
-            events.FirstOrDefault().Location.City.ShouldBe(location);
+            events.Count.ShouldBeGreaterThan(0);
+            events.FirstOrDefault()?.Location.City.ShouldBe(location);
         }
 
         [Theory]

@@ -6,7 +6,7 @@ namespace Spotkick.Test.UI.Pages
     public class HomePage
     {
         private readonly IWebDriver _driver;
-        private static By BtnFetchFollowedArtists => By.CssSelector("[data-test-id='fetch-followed-artists-button']");
+        private static By BtnLoginToSpotify => By.CssSelector("[data-test-id='login-to-spotify-button']");
 
         public HomePage(Context context)
         {
@@ -16,6 +16,6 @@ namespace Spotkick.Test.UI.Pages
         public void Go() => _driver.Navigate().GoToUrl("http://localhost:6254/");
         public string Title() => _driver.Title;
 
-        public void ClickFetchFollowedArtistsButton() => _driver.FindElement(BtnFetchFollowedArtists).Click();
+        public void ClickLoginToSpotifyButton() => _driver.FindElement(BtnLoginToSpotify).Click();
     }
 }

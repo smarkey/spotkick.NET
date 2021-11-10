@@ -2,7 +2,7 @@ using System;
 using System.Net;
 using System.Net.Http;
 using System.Net.Http.Headers;
-using System.Net.Http.Json;
+using System.Text;
 using System.Threading.Tasks;
 using NJsonSchema.Validation;
 using Shouldly;
@@ -50,7 +50,7 @@ namespace Spotkick.Test.API.Steps
             var response = httpMethod switch
             {
                 "GET" => await _client.GetAsync(endpoint),
-                "POST" => await _client.PostAsync(endpoint, new StringContent(payload, System.Text.Encoding.UTF8, "application/json")),
+                "POST" => await _client.PostAsync(endpoint, new StringContent(payload, Encoding.UTF8, "application/json")),
                 _ => throw new ArgumentException($"{httpMethod} is unsupported by this BDD step")
             };
 

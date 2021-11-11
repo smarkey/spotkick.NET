@@ -12,9 +12,18 @@ Spotkick creates a Spotify **playlist** featuring your **favourite musicians** w
 ### Prerequisites
 
 #### API Dependencies
-To run the application you'll need the following config in your `appsettings.json`:
+To run the application you'll need the following config in either `appsettings.json` or set as environment variables:
 - [**API key** for **Songkick**](https://www.songkick.com/api_key_requests/new)
 - [**Client Secrets** and **Redirect URIs** for **Spotify**](https://developer.spotify.com/dashboard/applications)
+
+If running with Docker you can add the following to the `spotkick` environment instructions in `docker-compose.yml`:
+```
+environment:
+  SPOTKICK_Spotify.ClientId: <REPLACE_ME>
+  SPOTKICK_Spotify.ClientSecret: <REPLACE_ME>
+  SPOTKICK_Spotify.CallbackUrl: <REPLACE_ME>
+  SPOTKICK_Songkick.Key: <REPLACE_ME>
+```
 
 #### SQLExpress Setup
 Only required if running locally rather than in Docker.

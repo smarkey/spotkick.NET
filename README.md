@@ -9,32 +9,46 @@ Spotkick creates a Spotify **playlist** featuring your **favourite musicians** w
 
 ## Runbook
 
-### API Keys
-To run the application you'll need:
-- **API key** for **Songkick**
-- **Client ID** & **Client Secret** for **Spotify**
+### Prerequisites
 
-### SQLExpress Setup
+#### API Dependencies
+To run the application you'll need the following config in your `appsettings.json`:
+- [**API key** for **Songkick**](https://www.songkick.com/api_key_requests/new)
+- [**Client Secrets** and **Redirect URIs** for **Spotify**](https://developer.spotify.com/dashboard/applications)
+
+#### SQLExpress Setup
+Only required if running locally rather than in Docker.
 
 1. Launch the SQL Server Configuration Manager.
 2. Select the SQL Server 2005 Network Configuration tab. There should be a Protocols for SQLExpress option, and one of the protocols should be TCP IP.
 3. Enable the TCP IP protocol if it is not enabled.
-4. The default port for SQL Express may not be 1433**. To find the port it is listening on, right-click on the TCP IP protocol and scroll all the way down to the IP All heading.
+4. The default port for SQL Server Express may not be 1433**. To find the port it is listening on, right-click on the TCP IP protocol and scroll all the way down to the IP All heading.
 Make sure to restart SQL Express before trying to connect.
 
 ** You'll need the port number (dynamically assigned) in order to view the contents in Rider
 
-### Running SpotKick
+### Running
 
-Clicking the Play button in VS, VSCode or Rider should work. Alternatively you can use the .NET Core CLI:
+You can use your IDE e.g. click the Play button in VS, VSCode or Rider.
+
+Alternatively you can use the .NET Core CLI:
 ```
 cd src\Spotkick
 dotnet run
 ```
 
-### Running SpotKick tests
+Or use Docker (Ensure the Docker Daemon is running first on your machine):
+```
+docker-compose up
+```
 
-Clicking the Play button in VS, VSCode or Rider should work. Alternatively you can use the .NET Core CLI:
+The application is available at `http://localhost:5000` and the API is available using swagger at `http://localhost:5000/swagger`
+
+### Running Tests
+
+You can use your IDE e.g. click the Play button in VS, VSCode or Rider.
+
+Alternatively you can use the .NET Core CLI:
 ```
 cd test\Spotkick.Test
 dotnet test
@@ -42,13 +56,15 @@ dotnet test
 
 ### Database Migrations
 
-Spotkick utilises Entity Framework. If you change the model you'll need to manage migrations:
+Spotkick utilises Entity Framework.
 
+You can generate a migration (diffs the current model compared with the DB schema):
 ```
 cd src\Spotkick
 dotnet ef migrations add InitialCreate
-
-# The application Startup also checks for new mig scripts and runs if necessary so it's possible to skip this
+```
+If you generate a migration script, the application runs your migrations on startup, but you can manually run them using the CLI:
+```
 dotnet ef database update <date>_InitialCreate
 ```
    

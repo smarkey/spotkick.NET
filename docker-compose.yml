@@ -1,17 +1,16 @@
-version: '3.4'
+version: '3.9'
 
 services:
   spotkick:
-    image: ${DOCKER_REGISTRY}spotkick
-    build:
-      context: .
-      dockerfile: src/Spotkick/Dockerfile
+    container_name: spotkick
+    build: .
+    depends_on:
+      - spotkick-data
     ports:
-      - "32768:80"
+      - "6254:5000"
   spotkick-data:
-    image: microsoft/mssql-server-linux:2017-latest
-    ports:
-      - "1433:1433"
+    image: mcr.microsoft.com/mssql/server:2019-latest
+    container_name: spotkick-data
     environment:
       ACCEPT_EULA: Y
       SA_PASSWORD: P4SSW0RD!

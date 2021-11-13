@@ -13,6 +13,8 @@ namespace Spotkick.Interfaces
         Task UpdateArtist(Artist artist);
         Task<IEnumerable<Artist>> IdentifyUncachedArtists(IEnumerable<Artist> artists);
         Task CreatePlaylist(Playlist playlist);
-        Task<IEnumerable<Artist>> GetFollowedArtistsWithEventsUsingAreaCalendar(string userId, Location location);
+
+        Task<IEnumerable<Artist>> FilterArtistsWithEventsUsingAreaCalendar(IEnumerable<Artist> followedArtists,
+            Location location);
     }
 }

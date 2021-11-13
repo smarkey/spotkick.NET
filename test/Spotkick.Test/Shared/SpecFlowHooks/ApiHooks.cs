@@ -6,15 +6,12 @@ using Shouldly;
 using Spotkick.Models;
 using Spotkick.Test.UI.TestContext;
 using TechTalk.SpecFlow;
-using static Spotkick.Test.UI.Infrastructure.WebDriverFactory;
 
 namespace Spotkick.Test.Shared.SpecFlowHooks
 {
     [Binding]
-    public class CommonHooks
+    public class ApiHooks
     {
-        private readonly Context _context;
-        
         private readonly string connectionString = new ConfigurationBuilder()
             .AddJsonFile("appsettings.Development.json")
             .Build()
@@ -31,30 +28,15 @@ namespace Spotkick.Test.Shared.SpecFlowHooks
             SpotifyUserId = "123",
         };
 
-        public CommonHooks(Context context)
+        public ApiHooks(Context context)
         {
-            _context = context;
-        }
-
-        [BeforeScenario("ui")]
-        public void BeforeUiScenario()
-        {
-            _context.Driver = Chrome();
-        }
-
-        [AfterScenario("ui")]
-        public void AfterUiScenario()
-        {
-            _context.Driver.Close();
-            _context.Driver.Quit();
-            _context.Driver = null;
         }
 
         [BeforeScenario("api")]
         public void BeforeApiScenario()
         {
             AfterApiScenario();
-            
+
             using var connection = new SqlConnection(connectionString);
 
             const string sql =

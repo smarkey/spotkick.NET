@@ -8,5 +8,6 @@ namespace Spotkick.Interfaces.Songkick
     public interface ISongkickService : IThirdPartyService
     {
         Task<IEnumerable<Artist>> FilterArtistsWithEventsInLocation(IEnumerable<Artist> artists, Location location);
+        public Task<IEnumerable<Artist>> GetArtistsWithEventsInLocation(Location location);
     }
 }

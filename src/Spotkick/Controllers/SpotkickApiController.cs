@@ -2,13 +2,10 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Logging;
-using Microsoft.Extensions.Options;
 using Spotkick.Interfaces;
+using Spotkick.Interfaces.Spotify;
 using Spotkick.Models;
 using Spotkick.Models.Songkick.Event;
-using Spotkick.Models.Spotify;
-using Spotkick.Services.Spotify;
 using Swashbuckle.Swagger.Annotations;
 
 namespace Spotkick.Controllers
@@ -19,14 +16,16 @@ namespace Spotkick.Controllers
     {
         private readonly IArtistService _artistService;
         private readonly IUserService _userService;
-        private readonly SpotifyService _spotifyService;
+        private readonly ISpotifyService _spotifyService;
 
-        public SpotkickApiController(ILogger<SpotkickApiController> logger, IArtistService artistService,
-            IUserService userService, IOptions<SpotifyConfig> config)
+        public SpotkickApiController(
+            IArtistService artistService,
+            IUserService userService,
+            ISpotifyService spotifyService)
         {
             _artistService = artistService;
             _userService = userService;
-            _spotifyService = new SpotifyService(logger, _userService, _artistService, config);
+            _spotifyService = spotifyService;
         }
 
         [HttpGet]
@@ -38,10 +37,7 @@ namespace Spotkick.Controllers
         {
             var user = await _userService.GetUserById(userId);
 
-            if (user == null)
-            {
-                return NotFound();
-            }
+            if (user == null) return NotFound();
 
             user.Token = null;
             return Ok(user);
@@ -55,8 +51,10 @@ namespace Spotkick.Controllers
         public async Task<ActionResult<IEnumerable<Artist>>> GetFollowedArtists(string userId,
             [FromQuery] string location)
         {
+            var user = await _userService.GetUserById(userId);
+            var followedArtists = await _spotifyService.GetFollowedArtists(user.SpotifyUserId);
             var result =
-                await _artistService.GetFollowedArtistsWithEventsUsingAreaCalendar(userId, new Location(location));
+                await _artistService.FilterArtistsWithEventsUsingAreaCalendar(followedArtists, new Location(location));
 
             return Ok(result);
         }

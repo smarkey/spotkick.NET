@@ -1,7 +1,7 @@
 ﻿@ui
-Feature: Authenticate with Spotify
+Feature: Authorize with Spotify
 As a spotkick member
-I want to be able to authenticate using Spotify
+I want to be able to authorize using Spotify
 In order to create Spotify playlists
 
     Scenario: Navigating to the home page allows me to perform Spotify SSO

@@ -7,12 +7,12 @@ using TechTalk.SpecFlow;
 namespace Spotkick.Test.UI.Steps
 {
     [Binding]
-    public class AuthenticateWithSpotifySteps
+    public class AuthorizeWithSpotifySteps
     {
         private readonly HomePage _homePage;
         private readonly SpotifySsoPage _spotifySsoPage;
 
-        public AuthenticateWithSpotifySteps(Context context)
+        public AuthorizeWithSpotifySteps(Context context)
         {
             _homePage = new HomePage(context);
             _spotifySsoPage = new SpotifySsoPage(context);

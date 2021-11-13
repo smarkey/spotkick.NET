@@ -27,7 +27,7 @@ namespace Spotkick.Test.Integration
                 .Get<SongkickConfig>();
 
             _sut = new SongkickService(
-                new Mock<ILogger>().Object,
+                new Mock<ILogger<SongkickService>>().Object,
                 Options.Create(config));
         }
 

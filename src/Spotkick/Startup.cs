@@ -12,10 +12,14 @@ using Microsoft.Extensions.Logging;
 using Serilog;
 using Spotkick.Data;
 using Spotkick.Interfaces;
+using Spotkick.Interfaces.Songkick;
+using Spotkick.Interfaces.Spotify;
 using Spotkick.Models;
 using Spotkick.Models.Songkick;
 using Spotkick.Models.Spotify;
 using Spotkick.Services;
+using Spotkick.Services.Songkick;
+using Spotkick.Services.Spotify;
 
 namespace Spotkick
 {
@@ -39,8 +43,11 @@ namespace Spotkick
             services.AddMvc(option => option.EnableEndpointRouting = false);
             services.AddRouting();
             services.AddSwaggerGen();
+            
             services.AddScoped<IArtistService, ArtistService>();
             services.AddScoped<IUserService, UserService>();
+            services.AddScoped<ISpotifyService, SpotifyService>();
+            services.AddScoped<ISongkickService, SongkickService>();
 
             services.AddOptions();
             services.Configure<SpotifyConfig>(Configuration.GetSection("Spotify"));

@@ -1,7 +1,7 @@
-using System;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Design;
 using Microsoft.Extensions.Logging;
 using Spotkick.Data;
 using Spotkick.Interfaces;
@@ -27,10 +27,7 @@ namespace Spotkick.Services
             _logger.LogInformation("Creating a user for {DisplayName}", user.DisplayName);
             var result = await _userManager.CreateAsync(user, "Te5ter!");
 
-            if (!result.Succeeded)
-            {
-                throw new Exception(result.Errors.ToString());
-            }
+            if (!result.Succeeded) throw new OperationException($"Failed to create a user: {result.Errors}");
         }
 
         public async Task<User> GetUserById(string userId)

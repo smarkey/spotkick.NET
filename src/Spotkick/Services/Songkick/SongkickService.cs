@@ -24,7 +24,7 @@ namespace Spotkick.Services.Songkick
         public JsonSerializerOptions _serializerOptions { get; set; }
         private readonly SongkickConfig _songkickConfig;
 
-        public SongkickService(ILogger logger, IOptions<SongkickConfig> config)
+        public SongkickService(ILogger<SongkickService> logger, IOptions<SongkickConfig> config)
         {
             _logger = logger;
             _songkickConfig = config.Value;
@@ -78,7 +78,8 @@ namespace Spotkick.Services.Songkick
             return responseContent?.ResultsPage.Results.Event ?? new List<Event>();
         }
 
-        public async Task<IEnumerable<Artist>> FilterArtistsWithEventsInLocation(IEnumerable<Artist> artists, Location location)
+        public async Task<IEnumerable<Artist>> FilterArtistsWithEventsInLocation(IEnumerable<Artist> artists,
+            Location location)
         {
             _logger.LogInformation("Filtering artists on those performing in {City}", location.City);
 
@@ -95,7 +96,7 @@ namespace Spotkick.Services.Songkick
 
                     if (spotifyArtistEventsInLocation.Any()) return true;
                 }
-                    
+
                 _logger.LogWarning("{ArtistName} has no Songkick ID", artist.Name);
                 return false;
             });
@@ -149,7 +150,7 @@ namespace Spotkick.Services.Songkick
         public async Task<IEnumerable<Artist>> GetArtistsWithEventsInLocation(Location location) =>
             (await GetEventsForLocation(location))
             .SelectMany(e => e.Performance)
-            .Select(performance =>  performance.Artist.ToSpotkickArtist())
+            .Select(performance => performance.Artist.ToSpotkickArtist())
             .Distinct();
     }
 }

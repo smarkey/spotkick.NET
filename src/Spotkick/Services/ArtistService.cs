@@ -2,15 +2,11 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
-using Microsoft.Extensions.Options;
 using Spotkick.Data;
 using Spotkick.Interfaces;
+using Spotkick.Interfaces.Songkick;
 using Spotkick.Models;
-using Spotkick.Models.Songkick;
 using Spotkick.Models.Songkick.Event;
-using Spotkick.Models.Spotify;
-using Spotkick.Services.Songkick;
-using Spotkick.Services.Spotify;
 
 namespace Spotkick.Services
 {
@@ -18,20 +14,16 @@ namespace Spotkick.Services
     {
         private readonly ILogger<ArtistService> _logger;
         private readonly SpotkickDbContext _dbContext;
-        private readonly SpotifyService _spotifyService;
-        private readonly SongkickService _songkickService;
+        private readonly ISongkickService _songkickService;
 
         public ArtistService(
             ILogger<ArtistService> logger, 
             SpotkickDbContext dbContext, 
-            IUserService userService, 
-            IOptions<SpotifyConfig> spotifyConfig, 
-            IOptions<SongkickConfig> songkickConfig)
+            ISongkickService songkickService)
         {
             _logger = logger;
             _dbContext = dbContext;
-            _spotifyService = new SpotifyService(logger, userService, this, spotifyConfig);
-            _songkickService = new SongkickService(logger, songkickConfig);
+            _songkickService = songkickService;
         }
 
         public async Task CreateArtists(IEnumerable<Artist> artists)
@@ -64,10 +56,9 @@ namespace Spotkick.Services
                 .Where(a => a != null);
         }
 
-        public async Task<IEnumerable<Artist>> GetFollowedArtistsWithEventsUsingAreaCalendar(string userId, Location location)
+        public async Task<IEnumerable<Artist>> FilterArtistsWithEventsUsingAreaCalendar(IEnumerable<Artist> followedArtists, Location location)
         {
             var artistsWithEvents = (await _songkickService.GetArtistsWithEventsInLocation(location)).ToList();
-            var followedArtists = (await _spotifyService.GetFollowedArtists(userId)).ToList();
 
             return followedArtists
                 .Where(followedArtist => artistsWithEvents.Any(_ => _.Name == followedArtist.Name))

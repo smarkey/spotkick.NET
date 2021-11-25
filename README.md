@@ -2,29 +2,20 @@
 Spotkick creates a Spotify **playlist** featuring your **favourite musicians** who are **playing in your area**.</p>
 
 # How does it achieve this goal?
-- **Songkick**: Used for Artist/Area performance data
-- **Spotify**: Used to establish the user's Followed Artists & to generate the Playlist
+- **Songkick**: For Artist or Area event data.
+- **Spotify**: For user's Followed Artists & creation of the Playlist.
 
 # Pre-requisites
 
 ## API Dependencies
-To run the application you'll need the following config in either `appsettings.json` or set as environment variables:
+To run the application you'll need the following config in `appsettings.json` or `appsettings.*.json`:
 - [**API key** for **Songkick**](https://www.songkick.com/api_key_requests/new)
-- [**Client Secrets** and **Redirect URIs** for **Spotify**](https://developer.spotify.com/dashboard/applications)
-
-If running with Docker you can add the following to the `spotkick` environment instructions in `docker-compose.yml`:
-```
-environment:
-  SPOTKICK_Spotify.ClientId: <REPLACE_ME>
-  SPOTKICK_Spotify.ClientSecret: <REPLACE_ME>
-  SPOTKICK_Spotify.CallbackUrl: <REPLACE_ME>
-  SPOTKICK_Songkick.Key: <REPLACE_ME>
-```
+- [**Client Id & Secret** and **Callback URLs** for **Spotify**](https://developer.spotify.com/dashboard/applications)
 
 ## Database
 
 ### Setup
-Only required if running locally rather than in Docker.
+Required for running locally. Not required for running with Docker.
 
 1. Launch the SQL Server Configuration Manager.
 2. Select the SQL Server 2005 Network Configuration tab. There should be a Protocols for SQLExpress option, and one of the protocols should be TCP IP.
@@ -35,16 +26,17 @@ Make sure to restart SQL Express before trying to connect.
 ** You'll need the port number (dynamically assigned) in order to view the contents in Rider
 
 ### Migrations
-Spotkick utilises Entity Framework.
+Spotkick uses Entity Framework.
 
 You can generate a migration (diffs the current model compared with the DB schema):
 ```
 cd src\Spotkick
-dotnet ef migrations add InitialCreate
+dotnet ef migrations add <MigrationScriptName>
 ```
-If you generate a migration script, the application runs your migrations on startup, but you can manually run them using the CLI:
+
+If you generate a migration script, the application runs them at startup, but you can manually run them using the CLI:
 ```
-dotnet ef database update <date>_InitialCreate
+dotnet ef database update <GeneratedDate>_<MigrationScriptName>
 ```
 
 # Running
@@ -61,7 +53,9 @@ Or use Docker (Ensure the Docker Daemon is running first on your machine):
 docker-compose up
 ```
 
-The application is available at `http://localhost:5000` and the API is available using swagger at `http://localhost:5000/swagger`
+The application is available at `http://localhost:6253` and the API is available using swagger at `http://localhost:6253/swagger`
+
+When using Docker, the port number is `6254`
 
 # Testing & Static Analysis
 

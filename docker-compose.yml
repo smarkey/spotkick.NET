@@ -8,11 +8,8 @@ services:
       - spotkick-data
     ports:
       - "6254:5000"
-#    environment:
-#      SPOTKICK_Spotify.ClientId: <REPLACE_ME>
-#      SPOTKICK_Spotify.ClientSecret: <REPLACE_ME>
-#      SPOTKICK_Spotify.CallbackUrl: <REPLACE_ME>
-#      SPOTKICK_Songkick.Key: <REPLACE_ME>
+    environment:
+      ASPNETCORE_ENVIRONMENT: Docker
   spotkick-data:
     image: mcr.microsoft.com/mssql/server:2019-latest
     container_name: spotkick-data

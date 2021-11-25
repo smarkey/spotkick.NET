@@ -13,9 +13,12 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 	ProjectSection(SolutionItems) = preProject
 		Readme.md = Readme.md
 		global.json = global.json
-		SonarQube.Analysis.xml = SonarQube.Analysis.xml
 		.gitignore = .gitignore
-		Dockerfile = Dockerfile
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Quality Items", "Quality Items", "{64C045A9-A4EC-4B87-A597-51DDA268B346}"
+	ProjectSection(SolutionItems) = preProject
+		SonarQube.Analysis.xml = SonarQube.Analysis.xml
 	EndProjectSection
 EndProject
 Global

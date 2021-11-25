@@ -1,7 +1,5 @@
 ﻿@{
     ViewData["Title"] = "Location";
-
-    var user = (User)ViewData["User"];
 }
 
 <h1>Location</h1>
@@ -10,10 +8,9 @@
     <div class="col-md-12">
         <p>We'll check which of your <strong>favourite musicians</strong> are <strong>playing in your area</strong>.</p>
         <form method="get" asp-controller="Spotkick" asp-action="Selection">
-            <input hidden name="userId" value="@user.Id"/>
             <label>
                 Select your area:
-                <select name="location">
+                <select name="city">
                     <option value="Bristol, UK">Bristol</option>
                     <option value="Bath, UK">Bath</option>
                     <option value="London, UK">London</option>

@@ -21,10 +21,10 @@ namespace Spotkick.Test.Unit
         {
             // Arrange
             var _sut = new SpotkickController(
+                It.IsAny<SpotifyService>(),
                 It.IsAny<ArtistService>(),
                 It.IsAny<UserManager<User>>(),
-                It.IsAny<SignInManager<User>>(),
-                It.IsAny<SpotifyService>());
+                It.IsAny<SignInManager<User>>());
 
             // Act
             var result = _sut.Index() as ViewResult;
@@ -39,10 +39,10 @@ namespace Spotkick.Test.Unit
         {
             // Arrange
             var _sut = new SpotkickController(
+                mockAuthorizeUrlInSpotifyService(),
                 It.IsAny<ArtistService>(),
                 It.IsAny<UserManager<User>>(),
-                It.IsAny<SignInManager<User>>(),
-                mockAuthorizeUrlInSpotifyService());
+                It.IsAny<SignInManager<User>>());
 
             // Act
             var result = _sut.Sso();
@@ -58,10 +58,10 @@ namespace Spotkick.Test.Unit
         {
             // Arrange
             var _sut = new SpotkickController(
+                mockAuthorizeUserInSpotifyService(),
                 It.IsAny<ArtistService>(),
                 mockGetUserAsyncInUserManager(),
-                mockSignInAsyncInSignInManager(),
-                mockAuthorizeUserInSpotifyService());
+                mockSignInAsyncInSignInManager());
 
             // Act
             var result = await _sut.Callback("auth_code_string_provided_by_spotify");
@@ -76,13 +76,13 @@ namespace Spotkick.Test.Unit
         {
             // Arrange
             var _sut = new SpotkickController(
+                It.IsAny<SpotifyService>(),
                 It.IsAny<ArtistService>(),
                 mockGetUserAsyncInUserManager(),
-                It.IsAny<SignInManager<User>>(),
-                It.IsAny<SpotifyService>());
+                It.IsAny<SignInManager<User>>());
 
             // Act
-            var result = await _sut.Discovery() as ViewResult;
+            var result = _sut.Discovery() as ViewResult;
 
             // Assert
             ((User)result?.ViewData["User"])?.ShouldBe(testUser);
@@ -94,20 +94,24 @@ namespace Spotkick.Test.Unit
             // Arrange
             const string city = "New York";
             var _sut = new SpotkickController(
+                mockGetFollowedArtistsInSpotifyService(),
                 mockGetArtistsWithEventsUsingAreaCalendarInArtistService(),
                 mockGetUserAsyncInUserManager(),
-                It.IsAny<SignInManager<User>>(),
-                mockGetFollowedArtistsInSpotifyService());
+                It.IsAny<SignInManager<User>>());
 
             // Act
             var result = await _sut.Selection(city) as ViewResult;
 
             // Assert
-            result?.ViewData["City"]?.ShouldBe(city);
-            result?.ViewData["UserId"]?.ShouldBe(testUser.Id);
-            result?.ViewData["SpotifyArtists"]?.ShouldBe(testArtistsList);
+            result?.Model.ShouldBeOfType<SelectionViewModel>();
             // default view for controller method always has ViewName of null
             result?.ViewName.ShouldBe(null);
+                
+            var model = result?.Model as SelectionViewModel;
+            
+            model?.Location.City.ShouldBe(city);
+            model?.User.Id.ShouldBe(testUser.Id);
+            model?.Artists.ShouldBe(testArtistsList);
         }
 
         [Fact]
@@ -115,16 +119,16 @@ namespace Spotkick.Test.Unit
         {
             // Arrange
             var _sut = new SpotkickController(
+                mockGetMostPopularTracksAndCreatePlaylistInSpotifyService(),
                 mockGetArtistsByIdInArtistService(),
                 mockGetUserAsyncInUserManager(),
-                It.IsAny<SignInManager<User>>(),
-                mockGetMostPopularTracksAndCreatePlaylistInSpotifyService());
+                It.IsAny<SignInManager<User>>());
 
             // Act
             var result = await _sut.Playlist(new List<long>(), 1) as ViewResult;
 
             // Assert
-            result?.ViewData["Playlist"].ShouldBeOfType<Playlist>();
+            result?.Model.ShouldBeOfType<PlaylistViewModel>();
             // default view for controller method always has ViewName of null
             result?.ViewName.ShouldBe(null);
         }

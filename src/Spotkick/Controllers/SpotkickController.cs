@@ -19,22 +19,22 @@ namespace Spotkick.Controllers
         private readonly SignInManager<User> _signInManager;
 
         public SpotkickController(
+            ISpotifyService spotifyService,
             IArtistService artistService,
             UserManager<User> userManager,
-            SignInManager<User> signInManager,
-            ISpotifyService spotifyService)
+            SignInManager<User> signInManager)
         {
+            _spotifyService = spotifyService;
             _artistService = artistService;
             _userManager = userManager;
             _signInManager = signInManager;
-            _spotifyService = spotifyService;
         }
 
         public IActionResult Index() => View();
 
         public RedirectResult Sso() => Redirect(_spotifyService.AuthorizeUrl());
 
-        public async Task<RedirectResult> Callback([FromQuery] string code)
+        public async Task<RedirectResult> Callback(string code)
         {
             var user = await _spotifyService.AuthorizeUser(code);
             await _signInManager.SignInAsync(user, true);
@@ -43,26 +43,25 @@ namespace Spotkick.Controllers
         }
 
         [Authorize]
-        public async Task<IActionResult> Discovery()
-        {
-            ViewData["User"] = await _userManager.GetUserAsync(User);
-
-            return View();
-        }
+        public IActionResult Discovery() => View();
 
         [Authorize]
-        public async Task<IActionResult> Selection([FromQuery] string location)
+        public async Task<IActionResult> Selection(string city)
         {
+            var location = new Location(city);
             var user = await _userManager.GetUserAsync(User);
             var followedArtists = await _spotifyService.GetFollowedArtists(user.SpotifyUserId);
             var followedArtistsWithEvents =
-                await _artistService.FilterArtistsWithEventsUsingAreaCalendar(followedArtists, new Location(location));
+                await _artistService.FilterArtistsWithEventsUsingAreaCalendar(followedArtists, location);
 
-            ViewData["Artists"] = followedArtistsWithEvents;
-            ViewData["UserId"] = user.Id;
-            ViewData["Location"] = location;
+            var model = new SelectionViewModel
+            {
+                Artists = followedArtistsWithEvents,
+                User = user,
+                Location = location
+            };
 
-            return View();
+            return View(model);
         }
 
         [Authorize]
@@ -72,14 +71,15 @@ namespace Spotkick.Controllers
             var artists = await _artistService.GetArtistsById(artistIds);
             var topTracks = await _spotifyService.GetMostPopularTracks(artists, user.SpotifyUserId, numberOfTracks);
 
-            ViewData["Playlist"] = await _spotifyService.CreatePlaylist(topTracks, user.SpotifyUserId);
+            var model = new PlaylistViewModel
+            {
+                Playlist = await _spotifyService.CreatePlaylist(topTracks, user.SpotifyUserId)
+            };
 
-            return View();
+            return View(model);
         }
 
-        public IActionResult Error()
-        {
-            return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
-        }
+        public IActionResult Error() => View(new ErrorViewModel
+            { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
     }
 }

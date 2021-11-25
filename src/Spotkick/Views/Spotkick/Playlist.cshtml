@@ -1,15 +1,15 @@
-﻿@{
-    ViewData["Title"] = "Playlist Created";
+﻿@model PlaylistViewModel
 
-    var playlist = (Playlist)ViewData["Playlist"];
+@{
+    ViewData["Title"] = "Playlist Created";
 }
 
 <h1>Playlist</h1>
 
 <div class="row">
     <div class="col-md-12">
-        <p>We have created a playlist in your Spotify account called <strong>@playlist.Name</strong>.</p>
-        <iframe src="https://open.spotify.com/embed/playlist/@playlist.SpotifyId"
+        <p>We have created a playlist in your Spotify account called <strong>@Model?.Playlist.Name</strong>.</p>
+        <iframe src="https://open.spotify.com/embed/playlist/@Model?.Playlist.SpotifyId"
                 width="300"
                 height="380"
                 allowtransparency="true"

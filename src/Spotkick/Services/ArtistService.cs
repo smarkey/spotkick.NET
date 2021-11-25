@@ -67,6 +67,7 @@ namespace Spotkick.Services
                     followedArtist.SongkickId = artistsWithEvents.First(_ => _.Name == followedArtist.Name).SongkickId;
                     return followedArtist;
                 })
+                .OrderBy(artist => artist.Name)
                 .ToList();
         }
 

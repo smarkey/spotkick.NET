@@ -26,7 +26,7 @@ namespace Spotkick.Test.Unit
         {
             // Arrange
             var policy = new JsonSnakeCaseNamingPolicy();
-            var textToConvert = "iAmCamelCased";
+            const string textToConvert = "iAmCamelCased";
 
             // Act
             var result = policy.ConvertName(textToConvert);

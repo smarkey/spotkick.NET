@@ -1,0 +1,28 @@
+version: '3.9'
+
+services:
+  zap:
+    container_name: zap
+    image: owasp/zap2docker-stable:latest
+    ports:
+      - "8090:8089"
+    command:
+      zap.sh -daemon -port 8090 -host 0.0.0.0
+  locust:
+    container_name: locust
+    image: locustio/locust:latest
+    ports:
+      - "8089:8089"
+    volumes:
+      - ./locust:/mnt/locust
+    command: -f /mnt/locust/locustfile.py -H http://spotkick:5000
+  sonarqube:
+    container_name: sonarqube
+    image: sonarqube:latest
+    ports:
+      - "9000:9000"
+  jenkins:
+    container_name: jenkins
+    image: jenkins/jenkins:latest
+    ports:
+      - "8088:8080"
